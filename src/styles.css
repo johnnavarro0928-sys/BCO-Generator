@@ -79,15 +79,23 @@ textarea {
 }
 
 .brand-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
-  background: linear-gradient(145deg, #e7b84a, #b88718);
-  box-shadow: 0 10px 22px rgba(5, 24, 44, 0.26);
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(255, 244, 213, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+}
+
+.sayuna-logo {
+  display: block;
+}
+
+.sayuna-logo-topbar {
+  width: 34px;
+  height: 34px;
 }
 
 .brand-name {
@@ -551,6 +559,7 @@ select option {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
   padding: 6px 12px;
   border-radius: 999px;
   margin-bottom: 14px;
@@ -561,6 +570,11 @@ select option {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   box-shadow: 0 10px 20px rgba(137, 101, 21, 0.18);
+}
+
+.sayuna-logo-badge {
+  width: 24px;
+  height: 24px;
 }
 
 .gen-title {

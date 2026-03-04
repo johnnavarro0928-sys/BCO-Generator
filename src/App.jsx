@@ -115,11 +115,52 @@ function Toast({ toast }) {
   return <div id="toast" className={toast.type}>{toast.message}</div>;
 }
 
+function SayunaLogo({ className = "" }) {
+  return (
+    <svg
+      viewBox="0 0 120 120"
+      className={className}
+      aria-hidden="true"
+      focusable="false"
+    >
+      <defs>
+        <linearGradient id="sayunaGradientA" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#2e8ff0" />
+          <stop offset="100%" stopColor="#20c7d8" />
+        </linearGradient>
+        <linearGradient id="sayunaGradientB" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#5560ea" />
+          <stop offset="100%" stopColor="#9a50ef" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M96 28H41c-10.5 0-19 8.5-19 19v26c0 10.5 8.5 19 19 19h24"
+        fill="none"
+        stroke="url(#sayunaGradientA)"
+        strokeWidth="12"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M24 92h55c10.5 0 19-8.5 19-19V47c0-10.5-8.5-19-19-19H55"
+        fill="none"
+        stroke="url(#sayunaGradientB)"
+        strokeWidth="12"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="60" cy="60" r="7" fill="#5f61eb" />
+    </svg>
+  );
+}
+
 function Topbar({ step, onStepChange, onDownload, downloading }) {
   return (
     <div className="topbar">
       <div className="brand">
-        <div className="brand-icon">📋</div>
+        <div className="brand-icon">
+          <SayunaLogo className="sayuna-logo sayuna-logo-topbar" />
+        </div>
         <div>
           <div className="brand-name">BCO GENERATOR</div>
           <div className="brand-sub">AI-POWERED LESSON PLANNER</div>
@@ -364,7 +405,10 @@ function App() {
       {generating ? (
         <div className="gen-overlay">
           <div className="gen-box">
-            <div className="gen-badge">Sayuna AI</div>
+            <div className="gen-badge">
+              <SayunaLogo className="sayuna-logo sayuna-logo-badge" />
+              <span>Sayuna AI</span>
+            </div>
             <div className="gen-title">Generating your weekly activities...</div>
             <div className="gen-sub">
               Sayuna AI is preparing the lesson flow, MLID notes, and remarks
