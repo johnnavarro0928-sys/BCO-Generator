@@ -7,25 +7,26 @@
 }
 
 :root {
-  --bg: #eaf4fb;
-  --bg-tint: #f4faff;
-  --surface: #eef6fd;
-  --surface-strong: #e2edf7;
-  --surface-deep: #d2e2f1;
-  --line: #c6d8e8;
-  --text: #20415e;
-  --text-soft: #5f7f99;
-  --shadow-raise: -10px -10px 24px rgba(255, 255, 255, 0.88), 12px 12px 28px rgba(172, 197, 220, 0.62);
-  --shadow-press: inset 6px 6px 14px rgba(176, 198, 219, 0.55), inset -6px -6px 12px rgba(255, 255, 255, 0.9);
-  --shadow-soft: 10px 10px 24px rgba(182, 201, 220, 0.32);
-  --deped-blue: #0b5cab;
-  --deped-blue-dark: #08457f;
-  --deped-red: #d84343;
-  --deped-gold: #d8af3d;
-  --green: #3d9471;
-  --blue: #4a9ddc;
-  --orange: #de8a55;
-  --red: #d95f5f;
+  --bg: #eaf3fb;
+  --bg-tint: #f7fbff;
+  --surface: #eef5fb;
+  --surface-strong: #dce8f3;
+  --surface-deep: #cbdceb;
+  --line: #bdd1e2;
+  --line-strong: #8eadc6;
+  --text: #163856;
+  --text-soft: #587691;
+  --shadow-raise: -8px -8px 18px rgba(255, 255, 255, 0.94), 10px 10px 22px rgba(171, 193, 213, 0.42);
+  --shadow-press: inset 4px 4px 10px rgba(175, 196, 216, 0.55), inset -4px -4px 9px rgba(255, 255, 255, 0.96);
+  --shadow-soft: 0 12px 28px rgba(134, 165, 193, 0.18);
+  --deped-blue: #0056a6;
+  --deped-blue-dark: #003e79;
+  --deped-red: #c63d3d;
+  --deped-gold: #d5a736;
+  --green: #2b8d69;
+  --blue: #2f79bf;
+  --orange: #c9773d;
+  --red: #c75252;
 }
 
 body {
@@ -59,7 +60,7 @@ textarea {
 .topbar {
   background: rgba(237, 246, 253, 0.88);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(11, 92, 171, 0.12);
+  border-bottom: 1px solid rgba(0, 86, 166, 0.14);
   padding: 0 28px;
   display: flex;
   align-items: center;
@@ -81,8 +82,7 @@ textarea {
   width: 36px;
   height: 36px;
   border-radius: 12px;
-  background:
-    linear-gradient(145deg, #fafdff, #d8e7f5);
+  background: linear-gradient(145deg, #fdfefe, #d7e7f6);
   box-shadow: var(--shadow-raise);
   display: flex;
   align-items: center;
@@ -120,7 +120,7 @@ textarea {
   font-weight: 600;
   padding: 7px 16px;
   transition: all 0.2s ease;
-  border: 1px solid rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.72);
   box-shadow: var(--shadow-raise);
 }
 
@@ -130,7 +130,7 @@ textarea {
 }
 
 .btn-outline:hover {
-  color: var(--deped-red);
+  color: var(--deped-blue);
   transform: translateY(-1px);
 }
 
@@ -180,7 +180,7 @@ textarea {
 }
 
 .btn-ai:hover {
-  color: var(--deped-red);
+  color: var(--deped-blue-dark);
 }
 
 .main {
@@ -205,6 +205,7 @@ textarea {
   color: var(--deped-blue-dark);
   letter-spacing: 2px;
   margin-bottom: 5px;
+  line-height: 1.15;
 }
 
 .page-sub {
@@ -225,10 +226,10 @@ textarea {
 
 .card-title,
 .comp-title {
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 2px;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   text-transform: uppercase;
 }
 
@@ -236,6 +237,10 @@ textarea {
 .page-title,
 .month-label {
   color: var(--deped-blue-dark);
+}
+
+.card-title.gold {
+  color: var(--deped-gold);
 }
 
 .card-title.blue {
@@ -257,6 +262,13 @@ textarea {
   font-weight: 400;
   letter-spacing: 0;
   margin-left: 6px;
+}
+
+.section-note {
+  margin-bottom: 16px;
+  color: var(--text-soft);
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .card-header,
@@ -318,9 +330,9 @@ textarea {
   background: linear-gradient(145deg, #e1edf8, #f9fcff);
   border: 1px solid rgba(255, 255, 255, 0.82);
   border-radius: 16px;
-  padding: 8px 11px;
+  padding: 10px 13px;
   color: var(--text);
-  font-size: 13px;
+  font-size: 14px;
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   box-shadow: var(--shadow-press);
@@ -338,6 +350,7 @@ textarea:focus {
 textarea {
   resize: vertical;
   line-height: 1.6;
+  min-height: 112px;
 }
 
 select option {
@@ -447,6 +460,30 @@ select option {
   color: var(--text-soft);
 }
 
+.date-card input[readonly] {
+  color: var(--deped-blue-dark);
+  font-weight: 600;
+}
+
+.date-card-primary {
+  position: relative;
+}
+
+.date-card-primary::after {
+  content: "Week start";
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--deped-red);
+}
+
+.date-card-auto {
+  opacity: 0.94;
+}
+
 .fill-actions {
   margin-top: 24px;
   justify-content: flex-start;
@@ -551,6 +588,10 @@ select option {
   .day-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .date-card-primary {
+    grid-column: span 2;
+  }
 }
 
 @media (max-width: 700px) {
@@ -589,5 +630,11 @@ select option {
   .wtab {
     width: 100%;
     justify-content: center;
+  }
+
+  .date-card-primary::after {
+    position: static;
+    display: block;
+    margin-top: 8px;
   }
 }

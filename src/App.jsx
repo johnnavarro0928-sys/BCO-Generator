@@ -33,6 +33,10 @@ const initialSig = {
 };
 
 function createWeek() {
+  const week = {
+    mondayDate: "",
+  };
+
   return ["dates", "competencies", "activities", "mlid", "remarks"].reduce(
     (week, section) => {
       week[section] = DAYS.reduce((days, day) => {
@@ -41,7 +45,7 @@ function createWeek() {
       }, {});
       return week;
     },
-    {},
+    week,
   );
 }
 
@@ -62,8 +66,45 @@ function cloneMonths(months) {
       activities: { ...week.activities },
       mlid: { ...week.mlid },
       remarks: { ...week.remarks },
+      mondayDate: week.mondayDate || "",
     })),
   }));
+}
+
+function formatMonthDay(date) {
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+  });
+}
+
+function normalizeToMonday(dateString) {
+  if (!dateString) {
+    return "";
+  }
+
+  const date = new Date(`${dateString}T12:00:00`);
+  const currentDay = date.getDay();
+  const offset = currentDay === 0 ? -6 : 1 - currentDay;
+  date.setDate(date.getDate() + offset);
+  return date.toISOString().slice(0, 10);
+}
+
+function buildWeekDates(mondayDate) {
+  if (!mondayDate) {
+    return DAYS.reduce((dates, day) => {
+      dates[day] = "";
+      return dates;
+    }, {});
+  }
+
+  const start = new Date(`${mondayDate}T12:00:00`);
+  return DAYS.reduce((dates, day, index) => {
+    const current = new Date(start);
+    current.setDate(start.getDate() + index);
+    dates[day] = formatMonthDay(current);
+    return dates;
+  }, {});
 }
 
 function Toast({ toast }) {
@@ -165,6 +206,19 @@ function App() {
     updateMonth(monthIndex, (month) => {
       month.weeks[weekIndex][section][day] = value;
     });
+  }
+
+  function handleMondayDateChange(monthIndex, weekIndex, selectedDate) {
+    const mondayDate = normalizeToMonday(selectedDate);
+
+    updateMonth(monthIndex, (month) => {
+      month.weeks[weekIndex].mondayDate = mondayDate;
+      month.weeks[weekIndex].dates = buildWeekDates(mondayDate);
+    });
+
+    if (selectedDate && mondayDate && selectedDate !== mondayDate) {
+      showToast("ℹ Date adjusted to the Monday of that week.", "ok");
+    }
   }
 
   function handleMonthMetaChange(monthIndex, field, value) {
@@ -582,23 +636,33 @@ function App() {
             </div>
 
             <div className="card">
-              <div className="card-title">📅 TARGET DATES</div>
+              <div className="card-title blue">📅 TARGET DATES</div>
+              <p className="section-note">
+                Select only the Monday date. The rest of the school week fills
+                in automatically.
+              </p>
               <div className="day-grid">
-                {DAYS.map((day) => (
-                  <label key={`date-${day}`}>
+                <label className="date-card date-card-primary" key="date-monday">
+                  <span className="field-label">MONDAY</span>
+                  <input
+                    type="date"
+                    value={currentWeek.mondayDate || ""}
+                    onChange={(event) =>
+                      handleMondayDateChange(
+                        activeMonth,
+                        activeWeek,
+                        event.target.value,
+                      )
+                    }
+                  />
+                </label>
+                {DAYS.slice(1).map((day) => (
+                  <label className="date-card date-card-auto" key={`date-${day}`}>
                     <span className="field-label">{day.toUpperCase()}</span>
                     <input
                       value={currentWeek.dates[day]}
-                      onChange={(event) =>
-                        updateWeekCell(
-                          activeMonth,
-                          activeWeek,
-                          "dates",
-                          day,
-                          event.target.value,
-                        )
-                      }
-                      placeholder="e.g. June 2"
+                      readOnly
+                      placeholder="Auto-filled"
                     />
                   </label>
                 ))}
