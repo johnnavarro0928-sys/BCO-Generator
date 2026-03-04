@@ -364,8 +364,13 @@ function App() {
       {generating ? (
         <div className="gen-overlay">
           <div className="gen-box">
-            <div className="gen-title">✨ AI is generating activities...</div>
-            <div className="gen-sub">{generating.message}</div>
+            <div className="gen-badge">Sayuna AI</div>
+            <div className="gen-title">Generating your weekly activities...</div>
+            <div className="gen-sub">
+              Sayuna AI is preparing the lesson flow, MLID notes, and remarks
+              for this week.
+            </div>
+            <div className="gen-sub gen-sub-secondary">{generating.message}</div>
             <div className="spinner" />
           </div>
         </div>
@@ -677,7 +682,7 @@ function App() {
                     {generatedWeekKey === weekStatusKey ? "✅ Generated!" : ""}
                   </span>
                   <button
-                    className="btn-ai"
+                    className="btn-ai btn-ai-prominent"
                     onClick={() => handleGenerateAI(activeMonth, activeWeek)}
                     disabled={
                       generating?.monthIndex === activeMonth &&
@@ -685,7 +690,7 @@ function App() {
                     }
                     type="button"
                   >
-                    ✨ Generate Activities with AI
+                    ✨ Generate with Sayuna AI
                   </button>
                 </div>
               </div>
