@@ -152,10 +152,26 @@ function buildWorksheet(ws, month, meta, sig) {
   });
   row += 1;
 
-  month.weeks.forEach((week) => {
+  month.weeks.forEach((week, weekIndex) => {
+    ws.getRow(row).height = 18;
+    styleCell(ws.getCell(row, 1), {
+      value: `WEEK ${weekIndex + 1}`,
+      bold: true,
+      size: 11,
+      fontColor: COLORS.whiteText,
+      bg: COLORS.navyMid,
+      hAlign: "center",
+      borderTop: "medium",
+      borderBottom: "thin",
+      borderLeft: "medium",
+      borderRight: "medium",
+    });
+    ws.mergeCells(row, 1, row, 11);
+    row += 1;
+
     const rows = [
       {
-        label: "Target Date",
+        label: "Target Date / Week #",
         key: "dates",
         bg: COLORS.dateBg,
         height: 16,
@@ -234,6 +250,28 @@ function buildWorksheet(ws, month, meta, sig) {
 
       row += 1;
     });
+
+    ws.getRow(row).height = 10;
+    styleCell(ws.getCell(row, 1), {
+      bg: "FFFFFFFF",
+      borderLeft: "medium",
+      borderRight: "medium",
+    });
+    DAYS.forEach((_, dayIndex) => {
+      const column = dayColumns[dayIndex];
+      const isLastDay = dayIndex === DAYS.length - 1;
+      styleCell(ws.getCell(row, column), {
+        bg: "FFFFFFFF",
+        borderLeft: "thin",
+        borderRight: isLastDay ? "medium" : "thin",
+      });
+      styleCell(ws.getCell(row, column + 1), {
+        bg: "FFFFFFFF",
+        borderRight: isLastDay ? "medium" : "thin",
+      });
+      ws.mergeCells(row, column, row, column + 1);
+    });
+    row += 1;
   });
 
   row += 1;

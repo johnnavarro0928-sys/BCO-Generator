@@ -69,15 +69,82 @@ function extractText(responseData) {
   return text;
 }
 
+function getGeminiApiKeys() {
+  const rawKeys = [
+    process.env.GEMINI_API_KEY,
+    process.env.GEMINI_API_KEY_FALLBACK,
+  ]
+    .filter(Boolean)
+    .map((value) => value.trim())
+    .filter(Boolean);
+
+  return [...new Set(rawKeys)];
+}
+
+async function requestGemini({ apiKey, meta, competencies }) {
+  const geminiResponse = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": apiKey,
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: buildPrompt({ ...meta, competencies }) }],
+          },
+        ],
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseJsonSchema: lessonSchema,
+        },
+      }),
+    },
+  );
+
+  if (!geminiResponse.ok) {
+    const errorBody = await geminiResponse.text();
+    const error = new Error(
+      `Gemini request failed with status ${geminiResponse.status}: ${errorBody}`,
+    );
+    error.status = geminiResponse.status;
+    throw error;
+  }
+
+  const responseData = await geminiResponse.json();
+  return JSON.parse(extractText(responseData));
+}
+
+function isRetryableGeminiError(error) {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  return (
+    error.status === 400 ||
+    error.status === 401 ||
+    error.status === 403 ||
+    error.status === 429 ||
+    (typeof error.status === "number" && error.status >= 500) ||
+    !("status" in error)
+  );
+}
+
 export default async function handler(request, response) {
   if (request.method !== "POST") {
     response.setHeader("Allow", "POST");
     return response.status(405).json({ error: "Method not allowed." });
   }
 
-  if (!process.env.GEMINI_API_KEY) {
+  const apiKeys = getGeminiApiKeys();
+
+  if (apiKeys.length === 0) {
     return response.status(500).json({
-      error: "Missing GEMINI_API_KEY environment variable.",
+      error:
+        "Missing Gemini environment variables. Set GEMINI_API_KEY and optionally GEMINI_API_KEY_FALLBACK.",
     });
   }
 
@@ -102,39 +169,27 @@ export default async function handler(request, response) {
   }
 
   try {
-    const geminiResponse = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": process.env.GEMINI_API_KEY,
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [{ text: buildPrompt({ ...meta, competencies }) }],
-            },
-          ],
-          generationConfig: {
-            responseMimeType: "application/json",
-            responseJsonSchema: lessonSchema,
-          },
-        }),
-      },
-    );
+    let lastError;
 
-    if (!geminiResponse.ok) {
-      const errorBody = await geminiResponse.text();
-      throw new Error(
-        `Gemini request failed with status ${geminiResponse.status}: ${errorBody}`,
-      );
+    for (let index = 0; index < apiKeys.length; index += 1) {
+      try {
+        const parsed = await requestGemini({
+          apiKey: apiKeys[index],
+          meta,
+          competencies,
+        });
+        return response.status(200).json(normalizeLessonPayload(parsed));
+      } catch (error) {
+        lastError = error;
+        console.error(`Gemini request failed for key ${index + 1}:`, error);
+
+        if (!isRetryableGeminiError(error) || index === apiKeys.length - 1) {
+          break;
+        }
+      }
     }
 
-    const responseData = await geminiResponse.json();
-    const parsed = JSON.parse(extractText(responseData));
-    return response.status(200).json(normalizeLessonPayload(parsed));
+    throw lastError || new Error("Gemini request failed.");
   } catch (error) {
     console.error("Gemini lesson generation failed:", error);
     return response.status(500).json({
