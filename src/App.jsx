@@ -163,7 +163,7 @@ function Topbar({ step, onStepChange, onDownload, downloading }) {
         </div>
         <div>
           <div className="brand-name">BCO GENERATOR</div>
-          <div className="brand-sub">AI-POWERED LESSON PLANNER</div>
+          <div className="brand-sub">POWERED BY: SAYUNA-AI</div>
         </div>
       </div>
       <div className="topbar-right">
