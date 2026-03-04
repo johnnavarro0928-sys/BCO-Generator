@@ -137,7 +137,7 @@ function SayunaLogo({ className = "" }) {
         d="M96 28H41c-10.5 0-19 8.5-19 19v26c0 10.5 8.5 19 19 19h24"
         fill="none"
         stroke="url(#sayunaGradientA)"
-        strokeWidth="12"
+        strokeWidth="14"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -145,11 +145,11 @@ function SayunaLogo({ className = "" }) {
         d="M24 92h55c10.5 0 19-8.5 19-19V47c0-10.5-8.5-19-19-19H55"
         fill="none"
         stroke="url(#sayunaGradientB)"
-        strokeWidth="12"
+        strokeWidth="14"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="60" cy="60" r="7" fill="#5f61eb" />
+      <circle cx="60" cy="60" r="8" fill="#5f61eb" />
     </svg>
   );
 }
